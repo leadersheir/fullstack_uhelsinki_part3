@@ -1,0 +1,23 @@
+{
+  "name": "fs_helsinki_p3",
+  "version": "0.0.1",
+  "description": "exercise submission for part3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Warisul Imam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/leadersheir/fullstack_uhelsinki_part3/issues"
+  },
+  "homepage": "https://github.com/leadersheir/fullstack_uhelsinki_part3#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}
