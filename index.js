@@ -1,5 +1,15 @@
 const express = require('express')
+const morgan = require('morgan')
+
 const app = express()
+
+
+morgan.token('post-content', (req, res) => {
+    if (req.method === 'POST') return JSON.stringify(req.body)
+})
+
+app.use(express.json())
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 
 let persons = [
     { 
@@ -62,8 +72,6 @@ app.delete('/api/persons/:id', (req, res) => {
     res.status(204).end()
 })
 
-app.use(express.json())
-
 const genId = () => {
     const id = Math.floor(Math.random()*1000000)
 
@@ -114,6 +122,8 @@ app.post('/api/persons', (req, res) => {
 
     res.json(person)
 })
+
+
 
 
 
