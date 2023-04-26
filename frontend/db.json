@@ -1,0 +1,19 @@
+{
+  "persons": [
+    {
+      "name": "Ada Lovelace",
+      "number": "39-69-5323520",
+      "id": 2
+    },
+    {
+      "name": "Piere Curie",
+      "number": "01729872222",
+      "id": 7
+    },
+    {
+      "name": "Marie Curie",
+      "number": "39-69-5323548",
+      "id": 8
+    }
+  ]
+}
