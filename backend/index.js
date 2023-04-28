@@ -1,6 +1,7 @@
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
+const Person = require('./models/person.js')
 
 const app = express()
 
@@ -13,7 +14,6 @@ app.use(express.static('build'))
 app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
-
 
 let persons = [
     { 
@@ -43,18 +43,18 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(persons)
+    Person.find({}).then(people => {
+        res.json(people)
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(person => person.id === id)
-
-    if (person) {
+    Person.findById(req.params.id).then(person => {
         res.json(person)
-    } else {
+    })
+    .catch(err => {
         res.status(404).end()
-    }
+    })
 })
 
 app.get('/info', (req, res) => {
@@ -70,17 +70,10 @@ app.get('/info', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    persons = persons.filter(person => person.id !== id)
-
-    res.status(204).end()
+    Person.findByIdAndDelete(req.params.id).then(res => {
+        res.status(204).end()
+    })
 })
-
-const genId = () => {
-    const id = Math.floor(Math.random()*1000000)
-
-    return id
-}
 
 app.post('/api/persons', (req, res) => {
     const body = req.body
@@ -99,32 +92,31 @@ app.post('/api/persons', (req, res) => {
         })
     }
 
-    const duplicateName = persons.find(person => person.name === body.name)
-    const duplicateNumber = persons.find(person => person.number === body.number)
+    // const duplicateName = persons.find(person => person.name === body.name)
+    // const duplicateNumber = persons.find(person => person.number === body.number)
 
-    if (duplicateName && duplicateNumber) {
-        return res.status(400).json({
-            error: 'entry already in contacts'
-        })
-    } else if (duplicateName) {
-        return res.status(400).json({
-            error: 'name already in contacts'
-        })
-    } else if (duplicateNumber) {
-        return res.status(400).json({
-            error: 'number already in contacts'
-        })
-    }
+    // if (duplicateName && duplicateNumber) {
+    //     return res.status(400).json({
+    //         error: 'entry already in contacts'
+    //     })
+    // } else if (duplicateName) {
+    //     return res.status(400).json({
+    //         error: 'name already in contacts'
+    //     })
+    // } else if (duplicateNumber) {
+    //     return res.status(400).json({
+    //         error: 'number already in contacts'
+    //     })
+    // }
 
-    let person = {
-        id: genId(),
+    const person = new Person({
         name: body.name,
         number: body.number
-    }
+    })
 
-    persons = [...persons, person]
-
-    res.json(person)
+    person.save().then(savedPerson => {
+        res.json(savedPerson)
+    })
 })
 
 
