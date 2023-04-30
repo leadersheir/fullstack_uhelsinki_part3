@@ -11,7 +11,8 @@ const PersonForm = ({
     setPersons,
     setShowNotification,
     setNotificationType,
-    setDeletionSubject
+    setDeletionSubject,
+    setValdMsg
 }) => {
 
     const clearForm = () => {
@@ -44,6 +45,18 @@ const PersonForm = ({
                         setShowNotification(false)
                         setNotificationType(null)
                         
+                        clearForm()
+                    }, 5000)
+                })
+                .catch(err => {
+                    const err_msg = err.response.data
+                    setShowNotification(true)
+                    setNotificationType('valdErr')
+                    setValdMsg(err_msg.error)
+
+                    setTimeout(() => {
+                        setShowNotification(false)
+                        setNotificationType(null)
                         clearForm()
                     }, 5000)
                 })

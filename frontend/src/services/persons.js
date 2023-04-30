@@ -5,6 +5,7 @@ const createNewPerson = newPersonObject => (
     axios
         .post(baseUrl, newPersonObject)
         .then(res => res.data)
+        .catch(err => Promise.reject(err))
 )
 
 const getAllPersons = () => (

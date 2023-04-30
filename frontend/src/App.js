@@ -24,6 +24,7 @@ const App = () => {
   const [showNotification, setShowNotification] = useState(false)
   const [notificationType, setNotificationType] = useState(null)
   const [deletionSubject, setDeletionSubject] = useState(null)
+  const [valdMsg, setValdMsg] = useState(null)
 
   const handleNameChange = e => {
     setNewName(e.target.value)
@@ -41,7 +42,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      {showNotification ? <Notification name={deletionSubject} type={notificationType}/> : <></>}
+      {showNotification ? <Notification name={deletionSubject} type={notificationType} valdMsg={valdMsg}/> : <></>}
       <Filter filterText={filterText} handleFilterTextChange={handleFilterTextChange} />
       <PersonForm 
         newName={newName}
@@ -55,6 +56,7 @@ const App = () => {
         setShowNotification={setShowNotification}
         setNotificationType={setNotificationType}        
         setDeletionSubject={setDeletionSubject}
+        setValdMsg={setValdMsg}
       />
       <Persons
         persons={filteredPersons}

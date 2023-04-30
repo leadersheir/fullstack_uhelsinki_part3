@@ -11,10 +11,12 @@ morgan.token('post-content', (req, res) => {
 })
 
 const errorHandler = (err, req, res, next) => {
-    console.error(err.message)
+    console.error(err.message, 'D:')
 
     if (err.name === 'CastError') {
         return res.status(400).send({ error: 'malformatted id' })
+    } else if (err.name === 'ValidationError') {
+        return res.status(400).json({ error: err.message })
     }
 
     next(error)
@@ -25,7 +27,6 @@ app.use(cors())
 app.use(express.json())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
 // the last middleware must be the error handler
-app.use(errorHandler)
 
 app.get('/', (req, res) => {
     res.send('<h1>Hello World!</h1>')
@@ -37,7 +38,7 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id).then(person => {
         if (person) {
             res.json(person)
@@ -67,7 +68,7 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
 
     const name = req.body.name
     const number = req.body.number
@@ -94,6 +95,7 @@ app.post('/api/persons', (req, res) => {
     person.save().then(savedPerson => {
         res.json(savedPerson)
     })
+    .catch(err => next(err))
 })
 
 app.put('/api/persons/:id', (req, res) => {
@@ -107,6 +109,7 @@ app.put('/api/persons/:id', (req, res) => {
 
 
 
+app.use(errorHandler)
 
 const PORT = process.env.PORT ||  3001
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
