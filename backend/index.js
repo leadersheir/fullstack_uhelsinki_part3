@@ -1,44 +1,44 @@
-const express = require('express')
-const morgan = require('morgan')
-const cors = require('cors')
-const Person = require('./models/person.js')
+const express = require("express")
+const morgan = require("morgan")
+const cors = require("cors")
+const Person = require("./models/person.js")
 
 const app = express()
 
 
-morgan.token('post-content', (req, res) => {
-    if (req.method === 'POST') return JSON.stringify(req.body)
+morgan.token("post-content", (req, res) => {
+    if (req.method === "POST") return JSON.stringify(req.body)
 })
 
 const errorHandler = (err, req, res, next) => {
-    console.error(err.message, 'D:')
+    console.error(err.message)
 
-    if (err.name === 'CastError') {
-        return res.status(400).send({ error: 'malformatted id' })
-    } else if (err.name === 'ValidationError') {
+    if (err.name === "CastError") {
+        return res.status(400).send({ error: "malformatted id" })
+    } else if (err.name === "ValidationError") {
         return res.status(400).json({ error: err.message })
     }
 
-    next(error)
+    next(err)
 }
 
-app.use(express.static('build'))
+app.use(express.static("build"))
 app.use(cors())
 app.use(express.json())
-app.use(morgan(':method :url :status :res[content-length] - :response-time ms :post-content'))
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms :post-content"))
 // the last middleware must be the error handler
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
+app.get("/", (req, res) => {
+    res.send("<h1>Hello World!</h1>")
 })
 
-app.get('/api/persons', (req, res) => {
+app.get("/api/persons", (req, res) => {
     Person.find({}).then(people => {
         res.json(people)
     })
 })
 
-app.get('/api/persons/:id', (req, res, next) => {
+app.get("/api/persons/:id", (req, res, next) => {
     Person.findById(req.params.id).then(person => {
         if (person) {
             res.json(person)
@@ -46,44 +46,44 @@ app.get('/api/persons/:id', (req, res, next) => {
             res.status(404).end()
         }
     })
-    .catch(err => next(err))
+        .catch(err => next(err))
 })
 
-app.get('/info', (req, res) => {
+app.get("/info", (req, res) => {
     Person.find({}).then(people => {
-        n_people = people.length
+        const n_people = people.length
         const date = new Date()
-        res_body = `
-            <p>Phonebook has info for ${n_persons} people</p>
+        const res_body = `
+            <p>Phonebook has info for ${n_people} people</p>
             <p>${date}</p>
         `
         res.send(res_body)
     })
 })
 
-app.delete('/api/persons/:id', (req, res, next) => {
+app.delete("/api/persons/:id", (req, res, next) => {
     Person.findByIdAndDelete(req.params.id).then(result => {
         res.status(204).end()
     })
-    .catch(err => next(err))
+        .catch(err => next(err))
 })
 
-app.post('/api/persons', (req, res, next) => {
+app.post("/api/persons", (req, res, next) => {
 
     const name = req.body.name
     const number = req.body.number
 
     if (!name && !number) {
         return res.status(400).json({
-            error: 'entry cannot be empty'
+            error: "entry cannot be empty"
         })
     } else if (!name) {
         return res.status(400).json({
-            error: 'name cannot be empty'
+            error: "name cannot be empty"
         })
     } else if (!number) {
         return res.status(400).json({
-            error: 'number cannot be empty'
+            error: "number cannot be empty"
         })
     }
 
@@ -95,15 +95,15 @@ app.post('/api/persons', (req, res, next) => {
     person.save().then(savedPerson => {
         res.json(savedPerson)
     })
-    .catch(err => next(err))
+        .catch(err => next(err))
 })
 
-app.put('/api/persons/:id', (req, res) => {
+app.put("/api/persons/:id", (req, res) => {
     const id = req.params.id
     const body = req.body
 
     Person.findByIdAndUpdate(id, body).then(result => {
-        res.json({id, ...body})
+        res.json({ id, ...body })
     })
 })
 

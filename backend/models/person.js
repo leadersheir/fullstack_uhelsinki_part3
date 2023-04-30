@@ -1,17 +1,17 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose")
 
-mongoose.set('strictQuery', false)
+mongoose.set("strictQuery", false)
 
 const dbUri = process.env.MONGODB_URI
 
-console.log('connecting to', dbUri)
+console.log("connecting to", dbUri)
 
 mongoose.connect(dbUri).then(result => {
-    console.log('connected to MongoDB')
+    console.log("connected to MongoDB")
 })
-.catch(err => {
-    console.log('error connecting to MongoDB', err.message)
-})
+    .catch(err => {
+        console.log("error connecting to MongoDB", err.message)
+    })
 
 const personSchema = new mongoose.Schema({
     name: {
@@ -31,7 +31,7 @@ const personSchema = new mongoose.Schema({
     },
 })
 
-personSchema.set('toJSON', {
+personSchema.set("toJSON", {
     transform: (doc, returnedObj) => {
         returnedObj.id = returnedObj._id.toString()
         delete returnedObj._id
@@ -39,4 +39,4 @@ personSchema.set('toJSON', {
     }
 })
 
-module.exports = mongoose.model('Person', personSchema)
+module.exports = mongoose.model("Person", personSchema)
